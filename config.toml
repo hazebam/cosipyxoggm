@@ -2,13 +2,12 @@
 # Please make your changes here.
 
 [SIMULATION_PERIOD]
-time_start = "2009-01-01T06:00"
-time_end = "2009-01-10T00:00"
-
+time_start = "2008-01-01T23:00"
+time_end = "2008-02-02T00:00"
 [FILENAMES]
 data_path = "./data/"
-input_netcdf = "Zhadang/Zhadang_ERA5_2009.nc"
-output_prefix = "Zhadang_ERA5"
+input_netcdf = "weather/awsout.nc"
+output_prefix = "glac1oggm3"
 
 [RESTART]
 restart = false # set to true if you want to start from restart file
@@ -39,7 +38,7 @@ local_port = 8786 # port for local cluster
 
 [FULL_FIELDS]
 # WRITE FULL FIELDS
-full_field = false # write full fields (2D data) to file
+full_field = true # write full fields (2D data) to file
 
 [FORCINGS]
 # TOTAL PRECIPITATION
@@ -60,4 +59,4 @@ yend = 40
 # Select which output variables are written to disk. Comma-separated. Edit with caution.
 output_atm = "T2,RH2,U2,RAIN,SNOWFALL,RRR,PRES,N,G,LWin,LWout,H,LE,B,QRR,Z0,ALBEDO,TS"
 output_internal = "ME,MB,surfMB,intMB,EVAPORATION,SUBLIMATION,CONDENSATION,DEPOSITION,surfM,subM,Q,REFREEZE,SNOWHEIGHT,TOTALHEIGHT,LAYERS"
-output_full = "HEIGHT,RHO,T,LWC,CC,POROSITY,LW,ICE_FRACTION,IRREDUCIBLE_WATER,REFREEZE"
+output_full = "HEIGHT,RHO,T,LWC,CC,POROSITY,ICE_FRACTION,IRREDUCIBLE_WATER,REFREEZE"

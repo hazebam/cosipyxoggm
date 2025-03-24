@@ -128,7 +128,7 @@ class IOClass:
         Returns:
             Model input data.
         """
-
+        
         if Config.restart:
             print(f"{'-'*62}\n\tRESTART FROM PREVIOUS STATE\n{'-'*62}\n")
 

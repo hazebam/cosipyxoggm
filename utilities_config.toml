@@ -29,24 +29,24 @@ aggregation_step = 'H'
 delimiter = ','
 
 [aws2cosipy.radiation]
-radiationModule = 'Wohlfahrt2016' # 'Moelg2009', 'Wohlfahrt2016', 'none'
+radiationModule = 'none' # 'Moelg2009', 'Wohlfahrt2016', 'none'
 LUT = false  # If there is already a Look-up-table for topographic shading and sky-view-factor built for this area, set to True
 LUT_path = "./data/static/LUT_Rad.nc"
-dtstep = 10800  # time step (s)
+dtstep = 3600  # time step (s)
 tcart = 26  # Station time correction in hour angle units (1 is 4 min)
-timezone_lon = 90.0  # Longitude of station
-zeni_thld = 85.0  # If you do not know the exact value for your location, set value to 89.0
+timezone_lon = -77.3528  # Longitude of station
+zeni_thld = 89.0  # If you do not know the exact value for your location, set value to 89.0
 
 [aws2cosipy.points]
 point_model = false
-plon = 90.64
-plat = 30.47
-hgt = 5665.0
+plon = -77.37
+plat = -9.38
+hgt = 4627.0
 
 [aws2cosipy.station]
-stationName = 'Zhadang'
-stationAlt = 5665.0
-stationLat = -54.4  # Latitude of station
+stationName = 'glac1'
+stationAlt = 5351.19
+stationLat = -9.3812  # Latitude of station
 
 [aws2cosipy.lapse]
 lapse_T = -0.006  # Temp K per  m
@@ -57,18 +57,18 @@ lapse_SNOWFALL = 0.0000  # Snowfall % per m (0 to 1)
 # CREATE STATIC FILE
 [create_static.paths]
 static_folder = "./data/static/"
-dem_path = "DEM/n30_e090_3arc_v2.tif"
-shape_path = "Shapefiles/Zhadang_RGI6.shp"
-output_file = "Zhadang_static.nc"
+dem_path = "DEM/demr.tif"
+shape_path = "Shapefiles/2202r.shp"
+output_file = "LHS-static-oggm.nc"
 
 [create_static.coords]
 tile = true
 aggregate = true
-aggregate_degree = 0.003
-longitude_upper_left = 90.62
-latitude_upper_left = 30.48
-longitude_lower_right = 90.66
-latitude_lower_right = 30.46
+aggregate_degree = 0.001
+longitude_upper_left = -77.387
+latitude_upper_left = -9.387
+longitude_lower_right = -77.338
+latitude_lower_right = -9.410
 
 # WRF2COSIPY
 [wrf2cosipy.constants]
