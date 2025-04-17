@@ -1,19 +1,19 @@
 import numpy as np
 import pandas as pd
 
-from cosipy.config import Config
-from cosipy.constants import Constants
-from cosipy.cpkernel.init import init_snowpack, load_snowpack
-from cosipy.cpkernel.io import IOClass
-from cosipy.modules.albedo import updateAlbedo
-from cosipy.modules.densification import densification
-from cosipy.modules.evaluation import evaluate
-from cosipy.modules.heatEquation import solveHeatEquation
-from cosipy.modules.penetratingRadiation import penetrating_radiation
-from cosipy.modules.percolation import percolation
-from cosipy.modules.refreezing import refreezing
-from cosipy.modules.roughness import updateRoughness
-from cosipy.modules.surfaceTemperature import update_surface_temperature
+from cosipyxoggm.config import Config
+from cosipyxoggm.constants import Constants
+from cosipyxoggm.cpkernel.init import init_snowpack, load_snowpack
+from cosipyxoggm.cpkernel.io import IOClass
+from cosipyxoggm.modules.albedo import updateAlbedo
+from cosipyxoggm.modules.densification import densification
+from cosipyxoggm.modules.evaluation import evaluate
+from cosipyxoggm.modules.heatEquation import solveHeatEquation
+from cosipyxoggm.modules.penetratingRadiation import penetrating_radiation
+from cosipyxoggm.modules.percolation import percolation
+from cosipyxoggm.modules.refreezing import refreezing
+from cosipyxoggm.modules.roughness import updateRoughness
+from cosipyxoggm.modules.surfaceTemperature import update_surface_temperature
 
 
 def init_nan_array_1d(nt: int) -> np.ndarray:
@@ -51,7 +51,7 @@ def init_nan_array_2d(nt: int, max_layers: int) -> np.ndarray:
     return x
 
 
-def cosipy_core(DATA, indY, indX, GRID_RESTART=None, stake_names=None, stake_data=None):
+def cosipy_core(DATA, indY, indX,ice_thk,GRID_RESTART=None, stake_names=None, stake_data=None):
     """Cosipy core function.
 
     The calculations are performed on a single core.
@@ -151,7 +151,7 @@ def cosipy_core(DATA, indY, indX, GRID_RESTART=None, stake_names=None, stake_dat
     # Initialize snowpack or load restart grid
     #--------------------------------------------
     if GRID_RESTART is None:
-        GRID = init_snowpack(DATA)
+        GRID = init_snowpack(DATA,ice_thk)
     else:
         GRID = load_snowpack(GRID_RESTART)
 

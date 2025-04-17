@@ -1,11 +1,10 @@
 import numpy as np
 from numba import njit
+from cosipyxoggm.constants import Constants
+from cosipyxoggm.cpkernel.grid import Grid
 
-from cosipy.constants import Constants
-from cosipy.cpkernel.grid import Grid
 
-
-def init_snowpack(DATA):
+def init_snowpack(DATA,ice_thk):
     """Initialise the snowpack.
 
     Args:
@@ -17,7 +16,7 @@ def init_snowpack(DATA):
 
     # Declare locally for faster lookup
     initial_snowheight_constant = Constants.initial_snowheight_constant
-    initial_glacier_height = Constants.initial_glacier_height
+    initial_glacier_height = ice_thk
     initial_glacier_layer_heights = Constants.initial_glacier_layer_heights
     temperature_bottom = Constants.temperature_bottom
     initial_top_density_snowpack = Constants.initial_top_density_snowpack

@@ -1,7 +1,7 @@
 #!/usr/bin/make
 # 2024 Nicolas Gampierakis
 
-LIBNAME=cosipy
+LIBNAME=cosipyxoggm
 
 ifeq (, $(shell which python ))
   $(error "PYTHON=$(PYTHON) not found in $(PATH)")

@@ -1,9 +1,9 @@
 import numpy as np
 from numba import njit
 
-from cosipy.constants import Constants
+from cosipyxoggm.constants import Constants
 
-# only required for njitted functions
+# only  for njitted functions
 zero_temperature = Constants.zero_temperature
 spec_heat_ice = Constants.spec_heat_ice
 ice_density = Constants.ice_density

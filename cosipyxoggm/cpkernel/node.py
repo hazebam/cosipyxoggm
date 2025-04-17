@@ -4,7 +4,7 @@ import numpy as np
 from numba import float64
 from numba.experimental import jitclass
 
-from cosipy.constants import Constants
+from cosipyxoggm.constants import Constants
 
 # only required for jitclass/njit
 ice_density = Constants.ice_density

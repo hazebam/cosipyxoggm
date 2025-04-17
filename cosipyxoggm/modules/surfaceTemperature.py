@@ -2,9 +2,9 @@ import numpy as np
 from numba import njit
 from scipy.optimize import minimize, newton
 
-from cosipy.config import Config
-from cosipy.constants import Constants
-from cosipy.modules.secant import secant
+from cosipyxoggm.config import Config
+from cosipyxoggm.constants import Constants
+from cosipyxoggm.modules.secant import secant
 
 zlt1 = Constants.zlt1
 zlt2 = Constants.zlt2

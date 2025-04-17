@@ -9,8 +9,8 @@ from datetime import datetime
 import numpy as np
 import xarray as xr
 
-from cosipy.config import Config
-from cosipy.constants import Constants
+from cosipyxoggm.config import Config
+from cosipyxoggm.constants import Constants
 
 
 class IOClass:

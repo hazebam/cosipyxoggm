@@ -1,4 +1,4 @@
-from cosipy.constants import Constants
+from cosipyxoggm.constants import Constants
 
 
 def updateRoughness(GRID) -> float:

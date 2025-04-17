@@ -1,6 +1,6 @@
 import numpy as np
 
-from cosipy.constants import Constants
+from cosipyxoggm.constants import Constants
 
 # only required for njitted functions
 albedo_method = Constants.albedo_method

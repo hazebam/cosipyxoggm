@@ -5,8 +5,8 @@ import numpy as np
 from numba import float64, intp, optional, typed, types
 from numba.experimental import jitclass
 
-from cosipy.constants import Constants
-from cosipy.cpkernel.node import Node
+from cosipyxoggm.constants import Constants
+from cosipyxoggm.cpkernel.node import Node
 
 node_type = Node.class_type.instance_type
 

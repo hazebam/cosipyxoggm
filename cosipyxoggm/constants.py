@@ -1,6 +1,6 @@
 import sys
 
-from cosipy.config import Config, TomlLoader, get_user_arguments
+from cosipyxoggm.config import Config, TomlLoader, get_user_arguments
 
 if sys.version_info >= (3, 11):
     import tomllib

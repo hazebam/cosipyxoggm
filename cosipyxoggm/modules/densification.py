@@ -1,7 +1,7 @@
 import numpy as np
 from numba import njit
 
-from cosipy.constants import Constants
+from cosipyxoggm.constants import Constants
 
 # only required for njitted functions
 densification_method = Constants.densification_method

@@ -1,6 +1,6 @@
 from numba import njit
 
-from cosipy.constants import Constants
+from cosipyxoggm.constants import Constants
 
 zero_temperature = Constants.zero_temperature
 air_density = Constants.air_density

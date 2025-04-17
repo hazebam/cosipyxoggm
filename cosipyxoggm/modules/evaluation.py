@@ -1,4 +1,4 @@
-from cosipy.config import Config
+from cosipyxoggm.config import Config
 
 
 def evaluate(stake_names, stake_data, df):
