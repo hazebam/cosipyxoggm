@@ -122,7 +122,7 @@ class IOClass:
         else:
             return timestamp
 
-    def create_data_file(self) -> xr.Dataset:
+    def create_data_file(self,DATA) -> xr.Dataset:
         """Create the input data and read the restart file if necessary.
 
         Returns:
@@ -149,7 +149,7 @@ class IOClass:
                 else:
                     self.GRID_RESTART = xr.open_dataset(restart_path)
                     """Get time of the last calculation and add one time
-                    step. GRID_RESTART.time is an array of np.datetime64
+                    step. GRID_RESTART.time is an ndarray of np.datetime64
                     objects.
                     """
                     self.restart_date = self.GRID_RESTART.time.values + np.timedelta64(
@@ -164,6 +164,7 @@ class IOClass:
         else:
             # If no restart, read data according to the dates defined in config file
             self.restart_date = None
+            self.DATA = DATA
             self.init_data_dataset()
 
         if Config.tile:  # Tile the data if desired
@@ -203,22 +204,22 @@ class IOClass:
         return self.GRID_RESTART
 
     def create_nan_array(self) -> np.ndarray:
-        """Create and fill a NaN array with time, (x,y) dimensions.
+        """Create and fill a NaN ndarray with time, (x,y) dimensions.
 
         Returns:
-            Filled array with time and 2D spatial coordinates.
+            Filled ndarray with time and 2D spatial coordinates.
         """
 
         return np.full((self.time, self.ny, self.nx), np.nan)
 
     def create_3d_nan_array(self, max_layers: int) -> np.ndarray:
-        """Create and fill a NaN array with time, (x,y,z) dimensions.
+        """Create and fill a NaN ndarray with time, (x,y,z) dimensions.
 
         Args:
             The maximum number of model layers.
 
         Returns:
-            Filled array with time and 3D spatial coordinates.
+            Filled ndarray with time and 3D spatial coordinates.
         """
 
         return np.full((self.time, self.ny, self.nx, max_layers), np.nan)
@@ -274,11 +275,11 @@ class IOClass:
             :HGT: Elevation [m].
         """
 
-        try:
-            input_path = os.path.join(Config.data_path, "input", Config.input_netcdf)
-            self.DATA = xr.open_dataset(input_path)
-        except FileNotFoundError:
-            raise SystemExit(f"Input file not found at: {input_path}")
+       # try:
+       #     input_path = os.path.join(Config.data_path, "input", Config.input_netcdf)
+       #     self.DATA = xr.open_dataset(input_path)
+       # except FileNotFoundError:
+       #     raise SystemExit(f"Input file not found at: {input_path}")
 
 
         self.DATA["time"] = np.sort(self.DATA["time"].values)
@@ -297,33 +298,33 @@ class IOClass:
         start_time = self.get_datetime(time_start)
         end_time = self.get_datetime(time_end)
 
-        if (start_time > end_interval) or (end_time < start_interval):
-            raise IndexError("Selected period not available in input data.\n")
-        if start_time < start_interval:
-            warnings.warn(
-                "\nWARNING! Selected startpoint before first timestep of input data\n",    
-            )
-        if end_time > end_interval:
-            warnings.warn(
-                "\nWARNING! Selected endpoint after last timestep of input data\n",    
-            )
+        #if (start_time > end_interval) or (end_time < start_interval):
+        #    raise IndexError("Selected period not available in input data.\n")
+        #if start_time < start_interval:
+        #    warnings.warn(
+        #        "\nWARNING! Selected startpoint before first timestep of input data\n",    
+        #    )
+        #if end_time > end_interval:
+        #    warnings.warn(
+        #        "\nWARNING! Selected endpoint after last timestep of input data\n",    
+        #    )
 
-        if self.restart_date is None:  # Check if restart option is set
-            print(
-                f"{'-'*62}\n\tIntegration from {time_start} to {time_end}\n{'-'*62}\n"
-            )
-            self.DATA = self.DATA.sel(time=slice(time_start, time_end))
-        else:
+        #if self.restart_date is None:  # Check if restart option is set
+        #   print(
+        #        f"{'-'*62}\n\tIntegration from {time_start} to {time_end}\n{'-'*62}\n"
+        #    )
+        #    self.DATA = self.DATA.sel(time=slice(time_start, time_end))
+        #else:
             # There is nothing to do if the dates are equal
-            if self.restart_date == end_time:
-                raise SystemExit("Start date equals end date ... no new data ... EXIT")
-            else:
-                # otherwise, run the model from the restart date to the defined end date
-                print(
-                    f"Starting from {self.restart_date} (from restart file) "
-                    f"to {time_end} (from config file)\n"
-                )
-                self.DATA = self.DATA.sel(time=slice(self.restart_date, time_end))
+        #    if self.restart_date == end_time:
+        #        raise SystemExit("Start date equals end date ... no new data ... EXIT")
+        #    else:
+        #        # otherwise, run the model from the restart date to the defined end date
+        #        print(
+        #            f"Starting from {self.restart_date} (from restart file) "
+        #            f"to {time_end} (from config file)\n"
+        #        )
+        #        self.DATA = self.DATA.sel(time=slice(self.restart_date, time_end))
 
         self.check_input_data()
         print(f"\nGlacier gridpoints: {np.nansum(self.DATA.MASK >= 1)} \n\n")
@@ -567,7 +568,7 @@ class IOClass:
     def create_global_result_arrays(self):
         """Create the global numpy arrays to store each output variable.
 
-        Each global array is filled with local results from the workers.
+        Each global ndarray is filled with local results from the workers.
         The arrays are then assigned to the RESULT dataset and stored to
         disk (see COSIPY.py).
         """
@@ -735,7 +736,7 @@ class IOClass:
     def create_global_restart_arrays(self):
         """Initialise the global numpy arrays to store layer profiles.
 
-        Each global array will be filled with local results from the
+        Each global ndarray will be filled with local results from the
         workers. The arrays will then be assigned to the RESTART dataset
         and stored to disk (see COSIPY.py).
         """

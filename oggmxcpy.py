@@ -22,7 +22,6 @@ from dask_jobqueue import SLURMCluster
 from distributed import Client, LocalCluster
 # import dask
 from tornado import gen
-from oggm.core import sia2d
 from cosipyxoggm.config import Config, SlurmConfig
 from cosipyxoggm.constants import Constants
 from cosipyxoggm.cpkernel.cosipy_core import cosipy_core
@@ -30,7 +29,6 @@ from cosipyxoggm.cpkernel.io import IOClass
 from oggm import cfg, utils
 from oggm.utils import floatyear_to_date
 from oggm.cfg import G, SEC_IN_YEAR, SEC_IN_DAY , SEC_IN_MONTH
-cfg.initialize(logging_level='WARNING')
 
 
 
@@ -84,10 +82,11 @@ class cosipymb():
         #plan is to NOT use restart files and put in snowheight into DATA.
         #heights needs to be returned with dims
         date = utils.floatyear_to_date(year)
-        year = date[0]
+        heights = heights
+        yr = date[0]
         month = date[1]
         DATA = self.DATA
-        DATAsel = DATA.isel(time = (DATA.time.dt.year == year))
+        DATAsel = DATA.isel(time = (DATA.time.dt.year == yr))
         DATAmonth = DATAsel.isel(month=(month-1))
         ice_thk = heights - self.topo 
         DATA.MASK = RESULT.where(ice_thk!=0)
@@ -99,8 +98,6 @@ class cosipymb():
         
 
     def run_mbmod(cluster,DATA,IO):
-        
-        
         IO = IOClass()
         DATA = self.DATA
         Config()

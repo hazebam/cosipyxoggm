@@ -41,7 +41,7 @@ from itertools import product
 from memory_profiler import profile
 import dateutil
 import netCDF4 as nc
-import numpy as np
+import cupy as np
 import pandas as pd
 import xarray as xr
 

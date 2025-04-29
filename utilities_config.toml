@@ -59,7 +59,7 @@ lapse_SNOWFALL = 0.0000  # Snowfall % per m (0 to 1)
 static_folder = "./data/static/"
 dem_path = "DEM/demr.tif"
 shape_path = "Shapefiles/2202r.shp"
-output_file = "LHS-static-oggm.nc"
+output_file = "LHS-static-oggmbig.nc"
 
 [create_static.coords]
 tile = true

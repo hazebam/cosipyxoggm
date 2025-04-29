@@ -144,10 +144,10 @@ class Model2D(object):
 
         if year is None:
             year = self.yr
-
+        
         # Do we have to optimise?
         if self.mb_elev_feedback == 'always':
-            _mb = self._mb_call(self.surface_h.flatten(), year=year)
+            _mb = self._mb_call(self.surface_h, year=year)
             _mb = _mb.reshape((self.ny, self.nx))
             if self.mb_filter is not None:
                 _mb[~ self.mb_filter & (_mb > 0)] = 0
@@ -161,7 +161,7 @@ class Model2D(object):
         if self._mb_current_date != date or (self._mb_current_out is None):
             # We need to reset all
             self._mb_current_date = date
-            _mb = self._mb_call(self.surface_h, year=date)
+            _mb = self._mb_call(self.surface_h, year=year)
             _mb = _mb.reshape((self.ny, self.nx))
             if self.mb_filter is not None:
                 _mb[~ self.mb_filter & (_mb > 0)] = 0
@@ -183,6 +183,8 @@ class Model2D(object):
                 if (np.any(self.ice_thick[0, :] > 10) or
                         np.any(self.ice_thick[-1, :] > 10) or
                         np.any(self.ice_thick[:, 0] > 10) or
+                        
+                        
                         np.any(self.ice_thick[:, -1] > 10)):
                     raise RuntimeError('Glacier exceeds boundaries')
             if self.ice_thick_filter is not None:
@@ -210,7 +212,7 @@ class Model2D(object):
         if ite > max_ite:
             raise RuntimeError('Did not find equilibrium.')
 
-    def run_until_and_store(self, ye, step=2, run_path=None, grid=None,
+    def run_until_and_store(self, ye, step=30, run_path=None, grid=None,
                             print_stdout=False, stop_if_border=False):
         """Run until a selected year and store the output in a NetCDF file."""
 

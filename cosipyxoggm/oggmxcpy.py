@@ -22,7 +22,7 @@ from dask_jobqueue import SLURMCluster
 from distributed import Client, LocalCluster
 # import dask
 from tornado import gen
-from oggm.core import sia2d
+from cosipyxoggm.SIAmodel import sia2d
 from cosipyxoggm.config import Config, SlurmConfig
 from cosipyxoggm.constants import Constants
 from cosipyxoggm.cpkernel.cosipy_core import cosipy_core
@@ -30,12 +30,12 @@ from cosipyxoggm.cpkernel.io import IOClass
 from oggm import cfg, utils
 from oggm.utils import floatyear_to_date
 from oggm.cfg import G, SEC_IN_YEAR, SEC_IN_DAY , SEC_IN_MONTH
-cfg.initialize(logging_level='WARNING')
+
 
 
 
 class cosipymb():
-    def __init__(self,ice_thk = None, topo = None ,yr = 1981 , DATA = None  , RESTART= None):
+    def __init__(self,ice_thk, topo = None ,yr = 1981 , DATA = None  , RESTART= None):
         #self.heights = heights
         self.DATA = DATA
         self.topo=topo
@@ -47,9 +47,10 @@ class cosipymb():
         self.IO = IOClass()
         self.RESTART = RESTART
         self.ice_thk = ice_thk
+        self.DATAmonth = None
        
         
-    ### topo = array of topology,
+    ### topo = ndarray of topology,
         
         #here i want to get heights and the step date (doing monthly for the time being)
         #heights from OGGM need to have dims- use create_static_file to make the DEMs for COSIPY
@@ -88,25 +89,45 @@ class cosipymb():
         month = date[1]
         DATA = self.DATA
         DATAsel = DATA.isel(time = (DATA.time.dt.year == year))
-        DATAmonth = DATAsel.isel(month=(month-1))
+        DATAmonth = DATAsel.isel(time = (DATAsel.time.dt.month == month))
+        self.DATAmonth = DATAmonth
+        DATAmonth.compute()
         ice_thk = heights - self.topo 
-        DATA.MASK = RESULT.where(ice_thk!=0)
-        main(self,ice_thk,DATA=DATAmonth)
+        RESULT = cosipymb.main(self,DATA=DATAmonth)
+        
+        #DATA.MASK = RESULT.where(ice_thk!=0)
         self.RESTART = self.IO.write_restart_to_file()
         self.RESULT = self.IO.write_results_to_file()
-        
-        return (RESULT.MB * constants.dt / RESULT.time.size)/constants.dt / cfg.rho 
+        #Now make a new function that will take MB from here and mean it over time, then do the maths to make it into a way that oggm can use it.
+        #Also please look at messing with config and IO to make this look much better and less janky
+        #Also also please clean up this area as there's 4 functions that are the same and u only use one. 
+        return RESULT
         
 
-    def run_mbmod(cluster,DATA,IO):
-        
-        
-        IO = IOClass()
-        DATA = self.DATA
+    def run_mbmod(self,cluster,DATA,IO,RESULT, RESTART, futures):
+        IO=IO
+        DATA = self.DATAmonth
+        ice_thk = self.ice_thk
         Config()
         Constants()
-        futures = []
-        
+
+        with Client(cluster) as client:
+            print_notice(msg="\tStarting clients and submitting jobs ...")
+            print(cluster)
+            print(client)
+
+            # Get dimensions of the whole domain
+            # ny = DATA.sizes[Config.northing]
+            # nx = DATA.sizes[Config.easting]
+
+            # cp = cProfile.Profile()
+
+            # Get some information about the cluster/nodes
+            total_grid_points = DATA.sizes[Config.northing]*DATA.sizes[Config.easting]
+            if Config.slurm_use:
+                total_cores = SlurmConfig.cores * SlurmConfig.nodes
+                points_per_core = total_grid_points // total_cores
+                print(total_grid_points, total_cores, points_per_core)
         for y,x in product(range(DATA.sizes[Config.northing]),range(DATA.sizes[Config.easting])):
             mask = DATA.MASK.isel(lat=y, lon=x)
             if (mask == 1) and (Config.restart):
@@ -154,7 +175,7 @@ class cosipymb():
                 # Write restart data to file
                 IO.write_restart_to_file()
                 
-    def main(self,DATA,ice_thk):
+    def main(self,DATA):
         Config()
         Constants()
 
@@ -163,12 +184,13 @@ class cosipymb():
         #------------------------------------------
         # Create input and output dataset
         #------------------------------------------
-        IO = self.IO
-        DATA = DATA
+        IO = IOClass(DATA)
+        DATAa = DATA
 
         # Create global result and restart datasets
         RESULT = IO.create_result_file()
         RESTART = IO.create_restart_file()
+        DATA = IO.create_data_file(DATA)
 
         #----------------------------------------------
         # Calculation - Multithreading using all cores
@@ -198,12 +220,12 @@ class cosipymb():
                 print(cluster.job_script())
                 print("You are using SLURM!\n")
                 print(cluster)
-                run_cosipy(cluster, IO, DATA, RESULT, RESTART, futures,ice_thk)
+                cosipymb.run_cosipy(cluster, IO, DATAa, RESULT, RESTART, futures)
 
         else:
             with LocalCluster(scheduler_port=Config.local_port, n_workers=Config.workers, local_directory='logs/dask-worker-space', threads_per_worker=1, silence_logs=True) as cluster:
                 print(cluster)
-                run_cosipy(cluster, IO, DATA, RESULT, RESTART, futures,ice_thk)
+                cosipymb.run_cosipy(self,cluster, IO, DATAa, RESULT, RESTART, futures)
 
         print("\n")
         print_notice(msg="Write results ...")
@@ -226,7 +248,7 @@ class cosipymb():
         output_netcdf = set_output_netcdf_path()
         output_path = create_data_directory(path='output')
         IO.get_result().to_netcdf(os.path.join(output_path,output_netcdf), encoding=encoding, mode='w')
-
+        RESULTS = IO.get_result()
         encoding = dict()
         for var in IO.get_restart().data_vars:
             # dataMin = IO.get_restart()[var].min(skipna=True).values
@@ -258,7 +280,10 @@ class cosipymb():
         return RESULTS
 
 
-    def run_cosipy(cluster, IO, DATA, RESULT, RESTART, futures,ice_thk):
+    def run_cosipy(self,cluster, IO, DATA, RESULT, RESTART, futures):
+        IO=IO
+        DATA = self.DATAmonth
+        ice_thk = self.ice_thk
         Config()
         Constants()
 
@@ -501,9 +526,9 @@ def transform_coordinates(coords):
 
     coords = np.asarray(coords).astype(float)
 
-    # is coords a tuple? Convert it to an one-element array of tuples
+    # is coords a tuple? Convert it to an one-element ndarray of tuples
     if coords.ndim == 1:
-        coords = np.array([coords])
+        coords = np.ndarray([coords])
 
     # convert to radiants
     lat_rad = np.radians(coords[:,0])
@@ -540,7 +565,15 @@ def check_for_nan(data):
     if np.isnan(data.to_array()).any():
         raise SystemExit('ERROR! There are NaNs in the dataset.')
 
+def get_time_required(action:str, times):
+    run_time = get_time_elapsed(times)
+    print(f"\tTime required to {action}: {run_time}")
 
+
+def get_time_elapsed(times) -> str:
+    run_time = times.total_seconds()
+    time_elapsed = f"{run_time//60.0:4g} minutes {run_time % 60.0:2g} seconds\n"
+    return time_elapsed
     
         
 

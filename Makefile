@@ -77,10 +77,10 @@ docs:	## Build documentation
 format:	isort black	## Format all python files
 
 setup-cosipy:	## Generate COSIPY configuration files
-		@$(PYTHON) -m cosipy.utilities.setup_cosipy.setup_cosipy
+		@$(PYTHON) -m cosipyxoggm.utilities.setup_cosipy.setup_cosipy
 
 create-static:
-		@$(PYTHON) -m cosipy.utilities.createStatic.create_static_file
+		@$(PYTHON) -m cosipyxoggm.utilities.createStatic.create_static_file
 
 commands:	## Display help for COSIPY
 		@$(PYTHON) -m COSIPY.py -h

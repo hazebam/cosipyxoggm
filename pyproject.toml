@@ -93,13 +93,13 @@ cosipy-shortcuts = "cosipy.config:print_entry_points"
 setup-cosipy = "cosipy.utilities.setup_cosipy.setup_cosipy:main"
 cosipy-setup = "cosipy.utilities.setup_cosipy.setup_cosipy:main"
 
-cosipy-aws2cosipy = "cosipy.utilities.aws2cosipy.aws2cosipy:main"
-cosipy-create-static = "cosipy.utilities.createStatic.create_static_file:main"
-cosipy-wrf2cosipy = "cosipy.utilities.wrf2cosipy.wrf2cosipy:main"
+cosipyxoggm-aws2cosipy = "cosipyxoggm.utilities.aws2cosipy.aws2cosipy:main"
+cosipyxoggm-create-static = "cosipyxoggm.utilities.createStatic.create_static_file:main"
+cosipyxoggm-wrf2cosipy = "cosipyxoggm.utilities.wrf2cosipy.wrf2cosipy:main"
 
-cosipy-plot-field = "cosipy.postprocessing.field_plots.plot_cosipy_fields:main"
-cosipy-plot-profile = "cosipy.postprocessing.profile_plots.plot_profiles:main"
-cosipy-plot-vtk = "cosipy.postprocessing.vtk_plots.plot_cosipy_fields_vtk:main"
+cosipyxoggm-plot-field = "cosipyxoggm.postprocessing.field_plots.plot_cosipy_fields:main"
+cosipyxoggm-plot-profile = "cosipyxoggm.postprocessing.profile_plots.plot_profiles:main"
+cosipyxoggm-plot-vtk = "cosipyxoggm.postprocessing.vtk_plots.plot_cosipy_fields_vtk:main"
 
 [tool.hatch.build.targets.sdist]
 packages = ["cosipyxoggm", "COSIPY.py", "oggmxcpy.py"]

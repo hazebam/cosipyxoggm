@@ -17,13 +17,13 @@ from cosipyxoggm.modules.surfaceTemperature import update_surface_temperature
 
 
 def init_nan_array_1d(nt: int) -> np.ndarray:
-    """Initialise and fill an array with NaNs.
+    """Initialise and fill an ndarray with NaNs.
     
     Args:
-        nt: Array size (time dimension).
+        nt: ndarray size (time dimension).
 
     Returns:
-        NaN array.
+        NaN ndarray.
     """
     if not Config.WRF_X_CSPY:
         x = np.full(nt, np.nan)
@@ -34,14 +34,14 @@ def init_nan_array_1d(nt: int) -> np.ndarray:
 
 
 def init_nan_array_2d(nt: int, max_layers: int) -> np.ndarray:
-    """Initialise and fill an array with NaNs.
+    """Initialise and fill an ndarray with NaNs.
     
     Args:
-        nt: Array's temporal resolution.
-        max_layers: Array's spatial resolution.
+        nt: ndarray's temporal resolution.
+        max_layers: ndarray's spatial resolution.
 
     Returns:
-        2D NaN array.
+        2D NaN ndarray.
     """
     if not Config.WRF_X_CSPY and Config.full_field:
         x = np.full((nt, max_layers), np.nan)

@@ -24,7 +24,7 @@ import numpy as np
 import richdem as rd
 import xarray as xr
 
-from cosipy.utilities.config_utils import UtilitiesConfig
+from cosipyxoggm.utilities.config_utils import UtilitiesConfig
 
 
 def check_folder_path(path: str) -> str:

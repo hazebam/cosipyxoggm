@@ -7,7 +7,7 @@ time_end = "2008-02-02T00:00"
 [FILENAMES]
 data_path = "./data/"
 input_netcdf = "weather/awsout.nc"
-output_prefix = "glac1oggm3"
+output_prefix = "glac1oggm"
 
 [RESTART]
 restart = false # set to true if you want to start from restart file
